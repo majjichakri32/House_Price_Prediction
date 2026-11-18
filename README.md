@@ -1,13 +1,24 @@
-# GitHub Codespaces ♥️ Express
+# House Price Prediction
 
-Welcome to your shiny new Codespace running Express! We've got everything fired up and running for you to explore Express.
+A California neighborhood median-value demo based on the XGBRegressor and workflow described in the project report. The FastAPI backend serves the web app, validates input, and returns predictions using the supplied `model.sav`.
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
+## Run locally
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+Python 3.10 or newer is required.
 
-To run this application:
-
-```
+```bash
+python -m pip install -r requirements.txt
 npm start
 ```
+
+`npm start` runs the Python API at <http://localhost:3000>. To start it without npm:
+
+```bash
+python -m uvicorn app:app --host 0.0.0.0 --port 3000
+```
+
+## Prediction API
+
+`POST /housePrice_prediction` accepts the eight numeric California housing features and an `Age_Group` value (`0-10`, `11-20`, `21-30`, `31-40`, `41-50`, or `50+`). The response includes `prediction` in the dataset's units of $100,000 and `prediction_usd`.
+
+The app also includes a data-analysis view with the report's dataset summary, age-group charts, reported correlations, and model evaluation scores. The estimates are educational neighborhood-level estimates, not individual home valuations; the source dataset caps its target near $500,000.

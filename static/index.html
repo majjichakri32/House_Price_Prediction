@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f5ef">
+    <title>House Price Model</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="wordmark" href="/" aria-label="House Price Model home">HOUSE PRICE MODEL</a>
+        <nav class="page-navigation" aria-label="Project pages">
+          <button class="page-tab active" type="button" data-view="predict" aria-current="page">01 &nbsp; Property valuation</button>
+          <button class="page-tab" type="button" data-view="analysis">02 &nbsp; Data analysis</button>
+        </nav>
+      </header>
+
+      <main>
+        <section class="view prediction-page active" id="predict-view" aria-labelledby="predict-title">
+          <div class="property-panel">
+            <div class="panel-topline">
+              <span class="section-label">01 / PROPERTY</span>
+              <span class="required-note">All fields required</span>
+            </div>
+            <h1 id="predict-title">Model inputs</h1>
+
+            <form id="prediction-form">
+              <div class="form-grid">
+                <label class="field">
+                  <span>Median income <small>$10,000s</small></span>
+                  <input name="MedInc" type="number" min="0.0001" max="15.0001" step="any" value="3.87" required>
+                </label>
+                <label class="field">
+                  <span>Median house age <small>years</small></span>
+                  <input name="HouseAge" type="number" min="1" max="52" step="any" value="29" required>
+                </label>
+                <label class="field">
+                  <span>Average rooms</span>
+                  <input name="AveRooms" type="number" min="0.0001" max="141.909" step="any" value="5.2" required>
+                </label>
+                <label class="field">
+                  <span>Average bedrooms</span>
+                  <input name="AveBedrms" type="number" min="0.0001" max="34.067" step="any" value="1.05" required>
+                </label>
+                <label class="field">
+                  <span>Population</span>
+                  <input name="Population" type="number" min="3" max="35682" step="any" value="1425" required>
+                </label>
+                <label class="field">
+                  <span>Average occupancy</span>
+                  <input name="AveOccup" type="number" min="0.0001" max="1243.333" step="any" value="3.0" required>
+                </label>
+                <label class="field">
+                  <span>Latitude</span>
+                  <input name="Latitude" type="number" min="32.54" max="41.95" step="any" value="34.2" required>
+                </label>
+                <label class="field">
+                  <span>Longitude</span>
+                  <input name="Longitude" type="number" min="-124.35" max="-114.31" step="any" value="-118.4" required>
+                </label>
+                <label class="field age-field">
+                  <span>Age group</span>
+                  <select name="Age_Group" required>
+                    <option selected>0-10</option>
+                    <option>11-20</option>
+                    <option>21-30</option>
+                    <option>31-40</option>
+                    <option>41-50</option>
+                    <option>50+</option>
+                  </select>
+                </label>
+              </div>
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+              <button class="estimate-button" type="submit">
+                <span>Estimate house price</span><span class="button-arrow" aria-hidden="true">→</span>
+              </button>
+            </form>
+          </div>
+
+          <aside class="estimate-panel" aria-live="polite">
+            <span class="section-label">02 / ESTIMATE</span>
+            <span class="currency-icon" aria-hidden="true">$</span>
+            <h2>Your estimate</h2>
+            <p class="estimate-value" id="result-price">$2.06</p>
+            <p class="estimate-units" id="result-scale">in $100,000s · approximately $206,000</p>
+            <p class="estimate-message" id="estimate-message"></p>
+            <p class="estimate-disclaimer">Estimate only. Actual sale prices may vary.</p>
+          </aside>
+        </section>
+
+        <section class="view analysis-page" id="analysis-view" aria-labelledby="analysis-title" hidden>
+          <header class="analysis-heading">
+            <span class="section-label">03 / DATA ANALYSIS</span>
+            <h1 id="analysis-title">California housing data</h1>
+            <p>Exploring neighborhood values, house-age groups, feature relationships, and model performance.</p>
+          </header>
+
+          <div class="analysis-grid">
+            <article class="analysis-card">
+              <h2>Average price by home age</h2>
+              <div id="age-price-chart" class="figure-area" role="img" aria-label="Average house price by home age group"></div>
+              <p class="figure-caption">The 50+ age group has the highest average target value, at about 2.7.</p>
+            </article>
+
+            <article class="analysis-card">
+              <h2>Homes in each age group</h2>
+              <div class="chart-toggle" role="group" aria-label="Choose age-group chart type">
+                <button class="chart-mode" type="button" data-chart="pie">Pie chart</button>
+                <button class="chart-mode active" type="button" data-chart="bar" aria-pressed="true">Bar chart</button>
+              </div>
+              <p class="chart-status" id="age-share-status">Showing bar chart.</p>
+              <div id="age-share-chart" class="figure-area share-figure" role="img" aria-label="Distribution of homes by house age group"></div>
+              <p class="figure-caption">The largest group is 31-40 years (28%); the 50+ group accounts for 7.1%.</p>
+            </article>
+
+            <article class="analysis-card">
+              <h2>Population outliers</h2>
+              <div id="population-boxplot" class="figure-area box-figure" role="img" aria-label="Box plot showing population outliers"></div>
+              <p class="figure-caption">Most areas have a lower population; a small number extend far above the main range.</p>
+            </article>
+
+            <article class="analysis-card">
+              <h2>House-price distribution</h2>
+              <div id="price-boxplot" class="figure-area box-figure" role="img" aria-label="Box plot showing the distribution of house prices"></div>
+              <p class="figure-caption">The price median is about 1.80, with the middle half of observations around 1.20-2.65.</p>
+            </article>
+
+            <article class="analysis-card full-width">
+              <h2>Feature correlation heatmap</h2>
+              <div id="correlation-heatmap" class="figure-area heatmap-figure" role="img" aria-label="Correlation heatmap for California housing features and price"></div>
+              <p class="figure-caption">Median income has the strongest relationship with price (0.7). Latitude and longitude are strongly negatively related (-0.9).</p>
+            </article>
+
+            <article class="analysis-card">
+              <span class="section-label">04 / MODEL CHECK</span>
+              <h2 class="model-check-heading">Predictions and evaluation</h2>
+              <p class="chart-description">The notebook trains an XGBoost regressor. R² is higher when the model is evaluated on training data than on held-out test data.</p>
+              <div id="training-predictions" class="figure-area predictions-figure" role="img" aria-label="Training data actual prices plotted against model predictions"></div>
+              <p class="figure-caption">Each dot is one training observation; closer to the diagonal means a closer prediction.</p>
+            </article>
+
+            <article class="analysis-card score-card">
+              <h2>Reported model scores</h2>
+              <div class="score-grid">
+                <section class="score-box" aria-label="Training scores">
+                  <h3>TRAINING · 16,512 HOMES</h3>
+                  <p><span>R²</span><strong>0.9475</strong></p>
+                  <p><span>Mean absolute error</span><strong>0.1868</strong></p>
+                </section>
+                <section class="score-box" aria-label="Test scores">
+                  <h3>TEST · 4,128 HOMES</h3>
+                  <p><span>R²</span><strong>0.8326</strong></p>
+                  <p><span>Mean absolute error</span><strong>0.3115</strong></p>
+                </section>
+              </div>
+              <p class="chart-description score-caption">The lower test R² and higher test error show that predictions are less accurate on unseen homes. Errors are in the dataset's scaled target units.</p>
+            </article>
+          </div>
+          <p class="analysis-note">The California dataset describes neighborhood block groups, not individual homes. Its target values are capped near $500,000.</p>
+        </section>
+      </main>
+
+      <footer class="document-footer">
+        <span>HOUSE PRICE MODEL</span>
+        <span id="page-number">PROPERTY VALUATION / 01</span>
+      </footer>
+    </div>
+  </body>
+</html>
